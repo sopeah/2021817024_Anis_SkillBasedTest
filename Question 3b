@@ -1,0 +1,35 @@
+import socket
+
+# Client configuration
+S_IP = "192.168.72.128"  
+S_PORT = 8443
+
+# Get user input for the pressure in bar
+user_input = input("Enter pressure in bar: ")
+pressure_bar = float(user_input)
+
+
+c_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+
+s_address = (S_IP, S_PORT)
+c_socket.connect(s_address)
+
+try:
+    # Send the pressure value to the server
+    c_socket.send(str(pressure_bar).encode('utf-8'))
+
+    # Receive the result from the server
+    pressure_atm_std = float(c_socket.recv(1024).decode('utf-8'))
+
+    # Display the received atmosphere-standard value
+    print("Pressure in atmosphere-standard (atm):", pressure_atm_std)
+
+except ValueError:
+    print("Invalid data received from the server.")
+except Exception as e:
+    print("An error occurred:", str(e))
+
+finally:
+    
+    c_socket.close()
