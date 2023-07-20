@@ -1,0 +1,49 @@
+import socket
+import threading
+import random
+
+# List of quotes
+quotes = [
+    "The fact that we’re alive is enough for us to be respected. Right? – Kim Namjoon",
+    "When things get hard, stop for a while and look back and see how far you’ve come – Kim Taehyung",
+    "Without anger or sadness, you won’t be able to feel true happiness. – Jeon Jungkook",
+    "Even if it’s a road of thorns, we still run - Min Yoongi ",
+    "Life goes on :) – BTS "
+]
+
+def handle_client(c_socket):
+    # Retrieve a random quote from the list
+    quote = random.choice(quotes)
+
+    # Send the quote to the client
+    c_socket.send(quote.encode('utf-8'))
+
+    # Close the client socket
+    c_socket.close()
+
+def main():
+  
+    S_IP = "0.0.0.0"
+    S_PORT = 8888
+
+   
+    s_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+ 
+    s_address = (S_IP, S_PORT)
+    s_socket.bind(s_address)
+
+   
+    s_socket.listen(5)
+    print("Server listening on {}:{}".format(S_IP, S_PORT))
+
+    while True:
+      
+        c_socket, c_address = s_socket.accept()
+
+       
+        c_thread = threading.Thread(target=handle_client, args=(c_socket,))
+        c_thread.start()
+
+if __name__ == "__main__":
+    main()
