@@ -1,0 +1,40 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+
+#define S_PORT 8443
+
+int main() {
+    int c_socket, random_num;
+    struct sockaddr_in s_add;
+
+    // Create socket
+    c_socket = socket(AF_INET, SOCK_STREAM, 0);
+    if (c_socket == -1) {
+        perror("Error creating socket");
+        exit(EXIT_FAILURE);
+    }
+
+    // Prepare server address structure
+    s_add.sin_family = AF_INET;
+    s_add.sin_addr.s_addr = inet_addr("192.168.72.128"); 
+    s_add.sin_port = htons(S_PORT);
+
+    // Connect to the server
+    if (connect(c_socket, (struct sockaddr*)&s_add, sizeof(s_add)) == -1) {
+        perror("Error connecting to server");
+        close(c_socket);
+        exit(EXIT_FAILURE);
+    }
+
+    // Receive the random number from the server
+    recv(c_socket, &random_num, sizeof(random_num), 0);
+
+    printf("Received random number from server: %d\n", random_num);
+
+    // Close the socket and exit
+    close(c_socket);
+    return 0;
+}
