@@ -1,0 +1,34 @@
+import socket
+
+# Server information
+s_host = "izani.synology.me"
+s_port = 8443
+
+
+c_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+try:
+   
+    s_address = (s_host, s_port)
+    c_socket.connect(s_address)
+
+  
+    user_input = input("Enter your text: ")
+
+
+    c_socket.send(user_input.encode('utf-8'))
+
+  
+    reply = c_socket.recv(1024).decode('utf-8')
+
+   
+    print("Reply from server:", reply)
+
+except ConnectionRefusedError:
+    print("Connection refused :( ")
+except Exception as e:
+    print("An error occurred:", str(e))
+
+finally:
+   
+    c_socket.close()
